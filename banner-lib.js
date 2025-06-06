@@ -157,7 +157,6 @@
             return response.json();
         })
         .then(data => {
-            console.log(data)
             if (!data.bannerUrl) {
                 throw new Error('Banner image URL not found');
             }
@@ -182,6 +181,16 @@
         
         const container = document.createElement('div');
         container.className = 'banner-lib-container';
+        container.onclick = function(e) {
+            e.stopPropagation();
+
+            const imageContainer = container.querySelector('.banner-lib-image');
+            const redirectBtn = container.querySelector('.banner-lib-button');
+
+            if (e.target === imageContainer && redirectBtn) {
+                redirectBtn.click();
+            }
+        }
         applyStyles(container, config.styles.container);
         
         const closeX = document.createElement('button');
