@@ -2,6 +2,7 @@
     'use strict';
     
     window.BannerLib = window.BannerLib || {};
+    let bannerInitialized = false;
     
     const defaultConfig = {
         apiBaseUrl: 'https://campaign.loopert.com', 
@@ -139,7 +140,12 @@
     }
 
     function showBanner(streamId, config = {}) {
+        if (bannerInitialized) return;
+        
+
         const finalConfig = { ...defaultConfig, ...config };
+
+        bannerInitialized = true;
         
         injectCSS();
         
@@ -165,6 +171,7 @@
         })
         .catch(error => {
             console.error('Erro ao carregar banner:', error);
+            bannerInitialized = false;
             if (config.onError) {
                 config.onError(error);
             }
@@ -262,6 +269,7 @@
     function removeBanner() {
         const overlay = document.getElementById('banner-lib-overlay');
         if (overlay) {
+            bannerInitialized = false;
             overlay.remove();
         }
     }
@@ -291,10 +299,15 @@
         });
     }
 
+    function isBannerActive() {
+        return bannerInitialized;
+    }
+
     window.BannerLib = {
         show: showBanner,
         close: closeBanner,
         init: autoInit,
+        isActive: isBannerActive,
         version: '1.0.0'
     };
 
