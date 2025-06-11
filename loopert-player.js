@@ -47,6 +47,7 @@ class LoopertPlayer {
 		};
 
 		this.player = null;
+		this.bannerInitialized = false;
 
 		this.init();
 	}
@@ -77,7 +78,7 @@ class LoopertPlayer {
 		const promises = [];
 
 		if (!window.Playerjs) {
-			promises.push(loadScript('player.min.js'));
+			promises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/player.min.js'));
 		}
 
 		if (!window.BannerLib) {
@@ -88,7 +89,7 @@ class LoopertPlayer {
 			const firstScript = scripts[0];
 			const dataAttributes = extractDataAttributes(firstScript);
 
-			promises.push(loadScript('banner-lib.js', dataAttributes));
+			promises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js', dataAttributes));
 		}
 
 		await Promise.all(promises);
@@ -145,7 +146,9 @@ class LoopertPlayer {
 	}
 
 	onPlay(id, data) {
-		this.initBanner();
+		if (!this.bannerInitialized) {
+			this.initBanner();
+		}
 	}
 
 	onPause(id, data) {}
@@ -155,9 +158,10 @@ class LoopertPlayer {
 	onGenericEvent(event, id, data) {}
 
 	initBanner() {
-		if (window.BannerLib) {
+		if (window.BannerLib && !this.bannerInitialized) {
 			try {
 				window.BannerLib.init();
+				this.bannerInitialized = true;
 			} catch (error) {
 				console.error('Erro ao inicializar banner:', error);
 			}
@@ -199,9 +203,82 @@ class LoopertPlayer {
 			this.player.api('destroy');
 		}
 		this.player = null;
+		this.bannerInitialized = false;
 	}
 
 	getPlayer() {
 		return this.player;
 	}
 }
+
+(function () {
+	'use strict';
+
+	async function loadDependencies() {
+		const scripts = findLoopertScripts();
+
+		if (scripts.length === 0) {
+			return;
+		}
+
+		const loadPromises = [];
+
+		if (!window.BannerLib) {
+			const firstScript = scripts[0];
+			const dataAttributes = extractDataAttributes(firstScript);
+
+			loadPromises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js', dataAttributes));
+		}
+
+		try {
+			await Promise.all(loadPromises);
+		} catch (error) {
+			console.error('Erro ao carregar dependências:', error);
+			throw error;
+		}
+	}
+
+	function setupEventListeners() {
+		const scripts = findLoopertScripts();
+
+		scripts.forEach((script) => {
+			const playerId = script.dataset.playerId;
+
+			if (!playerId) {
+				return;
+			}
+
+			const audioElement = document.getElementById(playerId);
+
+			if (audioElement) {
+				audioElement.removeEventListener('play', window.BannerLib.init);
+
+				audioElement.addEventListener('play', () => {
+					window.BannerLib.init();
+				});
+			}
+		});
+	}
+
+	async function init() {
+		try {
+			await loadDependencies();
+
+			setupEventListeners();
+
+			document.dispatchEvent(
+				new CustomEvent('loopertPlayerReady', {
+					detail: { timestamp: Date.now() },
+				})
+			);
+		} catch (error) {
+			document.dispatchEvent(
+				new CustomEvent('loopertPlayerError', {
+					detail: { error: error.message, timestamp: Date.now() },
+				})
+			);
+		}
+	}
+
+	init();
+})();
