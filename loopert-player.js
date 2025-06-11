@@ -250,6 +250,8 @@ class LoopertPlayer {
 	}
 
 	function showBanner() {
+		console.log('audio playing...');
+		console.trace();
 		window.BannerLib.init();
 	}
 
@@ -265,7 +267,10 @@ class LoopertPlayer {
 		const audioElement = document.getElementById(playerId);
 		if (!audioElement) return;
 
-		audioElement.addEventListener('play', showBanner);
+		if (!audioElement.dataset.listenerAdded) {
+			audioElement.addEventListener('play', showBanner);
+			audioElement.dataset.listenerAdded = 'true';
+		}
 	}
 
 	async function autoInit() {
