@@ -253,9 +253,8 @@ class LoopertPlayer {
 
 		audioElement.addEventListener('play', showBanner);
 	}
-	
 
-	async function init() {
+	async function autoInit() {
 		try {
 			await loadDependencies();
 
@@ -275,5 +274,9 @@ class LoopertPlayer {
 		}
 	}
 
-	init();
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', autoInit);
+	} else {
+		autoInit();
+	}
 })();
