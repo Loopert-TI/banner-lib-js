@@ -217,10 +217,7 @@ class LoopertPlayer {
 	async function loadDependencies() {
 		const scripts = findLoopertScripts();
 
-		if (scripts.length === 0) {
-			return;
-		}
-
+		if (scripts.length === 0) return;
 		const loadPromises = [];
 
 		if (!window.BannerLib) {
@@ -238,27 +235,25 @@ class LoopertPlayer {
 		}
 	}
 
+	function showBanner() {
+		window.BannerLib.init();
+	}
+	
 	function setupEventListeners() {
 		const scripts = findLoopertScripts();
+	
+		if (scripts.length === 0) return;
 
-		scripts.forEach((script) => {
-			const playerId = script.dataset.playerId;
+		const firstScript = scripts[0];
+		const playerId = firstScript.dataset.playerId;
+		if (!playerId) return;
 
-			if (!playerId) {
-				return;
-			}
+		const audioElement = document.getElementById(playerId);
+		if (!audioElement) return;
 
-			const audioElement = document.getElementById(playerId);
-
-			if (audioElement) {
-				audioElement.removeEventListener('play', window.BannerLib.init);
-
-				audioElement.addEventListener('play', () => {
-					window.BannerLib.init();
-				});
-			}
-		});
+		audioElement.addEventListener('play', showBanner);
 	}
+	
 
 	async function init() {
 		try {
