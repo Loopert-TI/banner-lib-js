@@ -265,7 +265,7 @@ class LoopertPlayer {
 		const audioElement = document.getElementById(playerId);
 		if (!audioElement) return;
 
-		audioElement.addEventListener('play', showBanner, { once: true });
+		audioElement.addEventListener('play', showBanner);
 	}
 
 	async function autoInit() {
