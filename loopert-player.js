@@ -78,7 +78,11 @@ class LoopertPlayer {
 		const promises = [];
 
 		if (!window.Playerjs) {
-			promises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/player.min.js'));
+			promises.push(
+				loadScript(
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/player.min.js'
+				)
+			);
 		}
 
 		if (!window.BannerLib) {
@@ -89,7 +93,12 @@ class LoopertPlayer {
 			const firstScript = scripts[0];
 			const dataAttributes = extractDataAttributes(firstScript);
 
-			promises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js', dataAttributes));
+			promises.push(
+				loadScript(
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js',
+					dataAttributes
+				)
+			);
 		}
 
 		await Promise.all(promises);
@@ -224,7 +233,12 @@ class LoopertPlayer {
 			const firstScript = scripts[0];
 			const dataAttributes = extractDataAttributes(firstScript);
 
-			loadPromises.push(loadScript('https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js', dataAttributes));
+			loadPromises.push(
+				loadScript(
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js',
+					dataAttributes
+				)
+			);
 		}
 
 		try {
@@ -238,10 +252,10 @@ class LoopertPlayer {
 	function showBanner() {
 		window.BannerLib.init();
 	}
-	
+
 	function setupEventListeners() {
 		const scripts = findLoopertScripts();
-	
+
 		if (scripts.length === 0) return;
 
 		const firstScript = scripts[0];
