@@ -273,7 +273,7 @@
     }
     
     function autoInit() {
-        const scripts = document.querySelectorAll('script[src*="banner-lib"]');
+        const scripts = document.querySelectorAll('script[src*="banner-lib.min"]');
         scripts.forEach(script => {
             const streamId = script.getAttribute('data-stream-id');
             
@@ -299,7 +299,7 @@
     };
 
     function shouldAutoInit() {
-        const scripts = document.querySelectorAll('script[src*="banner-lib"]');
+        const scripts = document.querySelectorAll('script[src*="banner-lib.min"]');
         return Array.from(scripts).some(script => 
             script.getAttribute('data-show-entry-popup') === 'true'
         );

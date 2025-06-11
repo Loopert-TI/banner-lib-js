@@ -32,7 +32,7 @@ function extractDataAttributes(element) {
 }
 
 function findLoopertScripts() {
-	return Array.from(document.querySelectorAll('script[src*="loopert-player"]'));
+	return Array.from(document.querySelectorAll('script[src*="loopert-player.min"]'));
 }
 
 class LoopertPlayer {
