@@ -272,12 +272,6 @@
         }
     }
     
-    window.BannerLib = {
-        show: showBanner,
-        close: closeBanner,
-        version: '1.0.0'
-    };
-    
     function autoInit() {
         const scripts = document.querySelectorAll('script[src*="banner-lib"]');
         scripts.forEach(script => {
@@ -296,11 +290,27 @@
             }
         });
     }
+
+    window.BannerLib = {
+        show: showBanner,
+        close: closeBanner,
+        init: autoInit,
+        version: '1.0.0'
+    };
+
+    function shouldAutoInit() {
+        const scripts = document.querySelectorAll('script[src*="banner-lib"]');
+        return Array.from(scripts).some(script => 
+            script.getAttribute('data-show-entry-popup') === 'true'
+        );
+    }
     
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', autoInit);
-    } else {
-        autoInit();
+    if (shouldAutoInit()) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', autoInit);
+        } else {
+            autoInit();
+        }
     }
 
 })();
