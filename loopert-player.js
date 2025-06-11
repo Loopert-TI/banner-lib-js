@@ -80,7 +80,7 @@ class LoopertPlayer {
 		if (!window.Playerjs) {
 			promises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/player.min.js'
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/player.min.js'
 				)
 			);
 		}
@@ -95,7 +95,7 @@ class LoopertPlayer {
 
 			promises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js',
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/banner-lib.min.js',
 					dataAttributes
 				)
 			);
@@ -235,7 +235,7 @@ class LoopertPlayer {
 
 			loadPromises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/banner-lib.min.js',
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/banner-lib.min.js',
 					dataAttributes
 				)
 			);
@@ -250,8 +250,6 @@ class LoopertPlayer {
 	}
 
 	function showBanner() {
-		console.log('audio playing...');
-		console.trace();
 		window.BannerLib.init();
 	}
 
