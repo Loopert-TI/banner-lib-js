@@ -1,7 +1,7 @@
 (function() {
     'use strict';
     
-    window.BannerLib = window.BannerLib || {};
+    window.LoopertBannerLib = window.LoopertBannerLib || {};
     
     const defaultConfig = {
         apiBaseUrl: 'https://campaign.loopert.com', 
@@ -138,6 +138,15 @@
         document.head.appendChild(style);
     }
 
+    function preloadImage(imageUrl) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('Falha ao carregar a imagem'));
+            img.src = imageUrl;
+        });
+    }
+
     function showBanner(streamId, config = {}) {
         const finalConfig = { ...defaultConfig, ...config };
 
@@ -161,6 +170,9 @@
                 throw new Error('Banner image URL not found');
             }
             
+            return preloadImage(data.bannerUrl).then(() => data);
+        })
+        .then(data => {
             createBannerModal(data, finalConfig);
         })
         .catch(error => {
@@ -205,11 +217,6 @@
         img.alt = 'Banner Image';
         img.className = 'banner-lib-image';
         applyStyles(img, config.styles.image);
-        
-        img.onerror = function() {
-            console.error('Erro ao carregar a imagem do banner');
-            closeBanner();
-        };
         
         container.appendChild(img);
         
@@ -273,7 +280,7 @@
     }
     
     function autoInit() {
-        const scripts = document.querySelectorAll('script[src*="banner-lib.min"]');
+        const scripts = document.querySelectorAll('script[src*="loopert-banner-lib.min"]');
         scripts.forEach(script => {
             const streamId = script.getAttribute('data-stream-id');
             
@@ -291,7 +298,7 @@
         });
     }
 
-    window.BannerLib = {
+    window.LoopertBannerLib = {
         show: showBanner,
         close: closeBanner,
         init: autoInit,
@@ -299,7 +306,7 @@
     };
 
     function shouldAutoInit() {
-        const scripts = document.querySelectorAll('script[src*="banner-lib.min"]');
+        const scripts = document.querySelectorAll('script[src*="loopert-banner-lib.min"]');
         return Array.from(scripts).some(script => 
             script.getAttribute('data-show-entry-popup') === 'true'
         );

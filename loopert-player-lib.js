@@ -32,7 +32,7 @@ function extractDataAttributes(element) {
 }
 
 function findLoopertScripts() {
-	return Array.from(document.querySelectorAll('script[src*="loopert-player.min"]'));
+	return Array.from(document.querySelectorAll('script[src*="loopert-player-lib.min"]'));
 }
 
 class LoopertPlayer {
@@ -47,7 +47,6 @@ class LoopertPlayer {
 		};
 
 		this.player = null;
-		this.bannerInitialized = false;
 
 		this.init();
 	}
@@ -80,12 +79,12 @@ class LoopertPlayer {
 		if (!window.Playerjs) {
 			promises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/player.min.js'
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/player.min.js'
 				)
 			);
 		}
 
-		if (!window.BannerLib) {
+		if (!window.LoopertBannerLib) {
 			const scripts = findLoopertScripts();
 
 			if (scripts.length === 0) return;
@@ -95,7 +94,7 @@ class LoopertPlayer {
 
 			promises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/banner-lib.min.js',
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/loopert-banner-lib.min.js',
 					dataAttributes
 				)
 			);
@@ -155,9 +154,7 @@ class LoopertPlayer {
 	}
 
 	onPlay(id, data) {
-		if (!this.bannerInitialized) {
-			this.initBanner();
-		}
+		this.initBanner();
 	}
 
 	onPause(id, data) {}
@@ -167,10 +164,9 @@ class LoopertPlayer {
 	onGenericEvent(event, id, data) {}
 
 	initBanner() {
-		if (window.BannerLib && !this.bannerInitialized) {
+		if (window.LoopertBannerLib) {
 			try {
-				window.BannerLib.init();
-				this.bannerInitialized = true;
+				window.LoopertBannerLib.init();
 			} catch (error) {
 				console.error('Erro ao inicializar banner:', error);
 			}
@@ -212,7 +208,6 @@ class LoopertPlayer {
 			this.player.api('destroy');
 		}
 		this.player = null;
-		this.bannerInitialized = false;
 	}
 
 	getPlayer() {
@@ -229,13 +224,13 @@ class LoopertPlayer {
 		if (scripts.length === 0) return;
 		const loadPromises = [];
 
-		if (!window.BannerLib) {
+		if (!window.LoopertBannerLib) {
 			const firstScript = scripts[0];
 			const dataAttributes = extractDataAttributes(firstScript);
 
 			loadPromises.push(
 				loadScript(
-					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@2.0.0/banner-lib.min.js',
+					'https://cdn.jsdelivr.net/gh/Loopert-TI/banner-lib-js@latest/loopert-banner-lib.min.js',
 					dataAttributes
 				)
 			);
@@ -250,7 +245,7 @@ class LoopertPlayer {
 	}
 
 	function showBanner() {
-		window.BannerLib.init();
+		window.LoopertBannerLib.init();
 	}
 
 	function setupEventListeners() {
