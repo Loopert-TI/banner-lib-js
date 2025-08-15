@@ -250,21 +250,45 @@ class LoopertPlayer {
 
 	function setupEventListeners() {
 		const scripts = findLoopertScripts();
-
 		if (scripts.length === 0) return;
-
+	
 		const firstScript = scripts[0];
 		const playerId = firstScript.dataset.playerId;
 		if (!playerId) return;
-
-		const audioElement = document.getElementById(playerId);
-		if (!audioElement) return;
-
-		if (!audioElement.dataset.listenerAdded) {
-			audioElement.addEventListener('play', showBanner);
-			audioElement.dataset.listenerAdded = 'true';
+	
+		let attempts = 0;
+		const maxAttempts = 50;
+	
+		function tryFindPlayer() {
+			attempts++;
+			const audioElement = document.getElementById(playerId);
+	
+			if (audioElement) {
+				console.log(`🎯 Elemento encontrado: #${playerId} na tentativa ${attempts}`);
+	
+				if (!audioElement.dataset.listenerAdded) {
+					audioElement.addEventListener('play', showBanner);
+					audioElement.dataset.listenerAdded = 'true';
+				}
+	
+				return true;
+			}
+	
+			return false;
 		}
+	
+		if (tryFindPlayer()) return;
+	
+		const intervalId = setInterval(() => {
+			if (tryFindPlayer() || attempts >= maxAttempts) {
+				if (attempts >= maxAttempts) {
+					console.warn(`⚠️ Elemento #${playerId} não encontrado após ${maxAttempts} tentativas`);
+				}
+				clearInterval(intervalId);
+			}
+		}, 1000);
 	}
+	
 
 	async function autoInit() {
 		try {
