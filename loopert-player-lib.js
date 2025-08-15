@@ -248,6 +248,22 @@ class LoopertPlayer {
 		window.LoopertBannerLib.init();
 	}
 
+	function findElementInFrames(elementId, root = window) {
+		const el = root.document.getElementById(elementId);
+		if (el) return el;
+	
+		for (let i = 0; i < root.frames.length; i++) {
+			try {
+				const frameEl = findElementInFrames(elementId, root.frames[i]);
+				if (frameEl) return frameEl;
+			} catch (e) {
+				console.warn('Não foi possível acessar frame:', e);
+			}
+		}
+	
+		return null;
+	}
+
 	function setupEventListeners() {
 		const scripts = findLoopertScripts();
 		if (scripts.length === 0) return;
@@ -261,7 +277,7 @@ class LoopertPlayer {
 	
 		function tryFindPlayer() {
 			attempts++;
-			const audioElement = document.getElementById(playerId);
+			const audioElement = findElementInFrames(playerId);
 	
 			if (audioElement) {
 				console.log(`🎯 Elemento encontrado: #${playerId} na tentativa ${attempts}`);
